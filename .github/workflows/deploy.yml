@@ -45,6 +45,16 @@ jobs:
           cat .clasp.json
           cat config.js
 
-      # 7. Google Apps Script へのデプロイ
+      # 7. Google Cloud の認証情報をセット
+      - name: Set up Google Cloud credentials
+        run: |
+          echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" > /tmp/credentials.json
+          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/credentials.json
+
+      # 8. Clasp ログイン
+      - name: Log in to Clasp
+        run: clasp login --no-localhost
+
+      # 9. Google Apps Script へのデプロイ
       - name: Deploy to GAS
         run: clasp push
