@@ -27,6 +27,15 @@ const CHANNEL_ID = 'YouTubeチャンネルID'
 const MAIL_TO = 'レポート送信先のメール';
 ```
 
+雑に以下のような処理を仮想マシンで行う想定
+```
+echo "const CLIENT_ID = '${{ secrets.CLIENT_ID }}';" > src/config.gs
+echo "const CLIENT_SECRET = '${{ secrets.CLIENT_SECRET }}';" >> src/config.gs
+echo "const REFRESH_TOKEN_KEY = '${{ secrets.REFRESH_TOKEN_KEY }}';" >> src/config.gs
+echo "const CHANNEL_ID = '${{ secrets.CHANNEL_ID }}';" >> src/config.gs
+echo "const MAIL_TO = '${{ secrets.MAIL_TO }}';" >> src/config.gs
+```
+
 todo::
 * 秘匿情報の設定
 * github actionの設定、構築
