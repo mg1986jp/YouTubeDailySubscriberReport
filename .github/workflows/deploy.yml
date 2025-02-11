@@ -1,0 +1,42 @@
+name: Deploy to Google Apps Script
+
+on:
+  push:
+    branches:
+      - main  # 'main' ブランチに push された際に実行
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # 仮想環境として Ubuntu を使用
+
+    steps:
+      # 1. リポジトリをクローン
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Node.js をセットアップ
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18  # Node.js のバージョンを指定
+
+      # 3. Clasp をインストール
+      - name: Install Clasp
+        run: npm install -g @google/clasp
+
+      # 4. .clasprc.json を設定
+      - name: Authenticate Clasp
+        run: echo "${{ secrets.CLASP_CREDENTIALS }}" > ~/.clasprc.json
+
+      # 5. config.gs の生成（環境変数を利用して秘匿情報を設定）
+      - name: Generate config.gs
+        run: |
+          echo "const CLIENT_ID = '${{ secrets.CLIENT_ID }}';" > src/config.gs
+          echo "const CLIENT_SECRET = '${{ secrets.CLIENT_SECRET }}';" >> src/config.gs
+          echo "const REFRESH_TOKEN_KEY = '${{ secrets.REFRESH_TOKEN_KEY }}';" >> src/config.gs
+          echo "const CHANNEL_ID = '${{ secrets.CHANNEL_ID }}';" >> src/config.gs
+          echo "const MAIL_TO = '${{ secrets.MAIL_TO }}';" >> src/config.gs
+
+      # 6. Google Apps Script へのデプロイ
+      - name: Deploy to GAS
+        run: clasp push
