@@ -14,35 +14,32 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. クローンの確認
-      - name: List files in the current directory
-        run: ls -a  # リポジトリの中身を確認
-
-      # 3. Node.js をセットアップ
+      # 2. Node.js をセットアップ
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18  # Node.js のバージョンを指定
 
-      # 4. Clasp をインストール
+      # 3. Clasp をインストール
       - name: Install Clasp
         run: npm install -g @google/clasp
 
-      # 5. .clasprc.json を設定
-      - name: Authenticate Clasp
+      # 4. .clasprc.json を設定
+      - name: Set up .clasprc.json
         run: echo "${{ secrets.CLASP_CREDENTIALS }}" > ~/.clasprc.json
 
-      # 6. config.gs の生成（環境変数を利用して秘匿情報を設定）
+      # 5. config.gs の生成（環境変数を利用して秘匿情報を設定）
       - name: Generate config.gs
         run: |
-          mkdir -p src  # src ディレクトリがない場合に作成
+          echo "const CLIENT_ID = '${{ secrets.CLIENT_ID }}';" > config.js
+          echo "const CLIENT_SECRET = '${{ secrets.CLIENT_SECRET }}';" >> config.js
+          echo "const REFRESH_TOKEN_KEY = '${{ secrets.REFRESH_TOKEN_KEY }}';" >> config.js
+          echo "const CHANNEL_ID = '${{ secrets.CHANNEL_ID }}';" >> config.js
+          echo "const MAIL_TO = '${{ secrets.MAIL_TO }}';" >> config.js
           ls -a  # 現在のディレクトリの中身を確認（必要であればデバッグとして使用）
-          echo "const CLIENT_ID = '${{ secrets.CLIENT_ID }}';" > src/config.gs
-          echo "const CLIENT_SECRET = '${{ secrets.CLIENT_SECRET }}';" >> src/config.gs
-          echo "const REFRESH_TOKEN_KEY = '${{ secrets.REFRESH_TOKEN_KEY }}';" >> src/config.gs
-          echo "const CHANNEL_ID = '${{ secrets.CHANNEL_ID }}';" >> src/config.gs
-          echo "const MAIL_TO = '${{ secrets.MAIL_TO }}';" >> src/config.gs
+          cat .clasprc.json
+          cat config.js
 
-      # 7. Google Apps Script へのデプロイ
+      # 6. Google Apps Script へのデプロイ
       - name: Deploy to GAS
         run: clasp push
