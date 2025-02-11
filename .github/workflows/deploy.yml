@@ -24,7 +24,7 @@ jobs:
       - name: Install Clasp
         run: npm install -g @google/clasp
 
-      # 4. .clasprc.json を設定
+      # 4. .clasprc.json を設定（GitHub Secretsを使用）
       - name: Set up .clasprc.json
         run: echo "${{ secrets.CLASP_CREDENTIALS }}" > ~/.clasprc.json
 
@@ -45,15 +45,15 @@ jobs:
           cat .clasp.json
           cat config.js
 
-      # 7. Google Cloud の認証情報をセット
+      # 7. Google Cloud の認証情報をセット（サービスアカウントのJSON）
       - name: Set up Google Cloud credentials
         run: |
           echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" > /tmp/credentials.json
           export GOOGLE_APPLICATION_CREDENTIALS=/tmp/credentials.json
 
-      # 8. Clasp ログイン
+      # 8. Clasp ログイン（サービスアカウントを使用）
       - name: Log in to Clasp
-        run: clasp login --no-localhost
+        run: clasp login --creds /tmp/credentials.json
 
       # 9. Google Apps Script へのデプロイ
       - name: Deploy to GAS
