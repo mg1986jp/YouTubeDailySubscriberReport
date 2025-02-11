@@ -32,7 +32,7 @@ function sendEmail() {
 
 
   var emailBody = `
-    <h2>チャンネル統計！！！</h2>
+    <h2>チャンネル統計？？？</h2>
     <p><strong>チャンネル名：</strong> ${channel.title}</p>
     <p><strong>チャンネル開設日：</strong> ${channel.publishedAt}</p>
     <p><strong>チャンネル登録者数：</strong> ${Number(channel.subscriberCount).toLocaleString()}人</p>
