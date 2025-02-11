@@ -28,7 +28,11 @@ jobs:
       - name: Set up .clasprc.json
         run: echo "${{ secrets.CLASP_CREDENTIALS }}" > ~/.clasprc.json
 
-      # 5. config.gs の生成（環境変数を利用して秘匿情報を設定）
+      # 5. .clasp.json を設定
+      - name: Set up .clasp.json
+        run: echo '{"scriptId":"${{ secrets.SCRIPT_ID }}","rootDir":"${{ github.workspace }}"}' > .clasp.json
+
+      # 6. config.gs の生成（環境変数を利用して秘匿情報を設定）
       - name: Generate config.gs
         run: |
           echo "const CLIENT_ID = '${{ secrets.CLIENT_ID }}';" > config.js
@@ -37,9 +41,10 @@ jobs:
           echo "const CHANNEL_ID = '${{ secrets.CHANNEL_ID }}';" >> config.js
           echo "const MAIL_TO = '${{ secrets.MAIL_TO }}';" >> config.js
           ls -a  # 現在のディレクトリの中身を確認（必要であればデバッグとして使用）
-          cat .clasprc.json
+          cat ~/.clasprc.json
+          cat .clasp.json
           cat config.js
 
-      # 6. Google Apps Script へのデプロイ
+      # 7. Google Apps Script へのデプロイ
       - name: Deploy to GAS
         run: clasp push
